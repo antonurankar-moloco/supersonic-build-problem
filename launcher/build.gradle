@@ -2,17 +2,12 @@ apply plugin: 'com.android.application'
 
 dependencies {
     implementation project(':unityLibrary')
-    }
-
-android {
-    packagingOptions {
-        pickFirst("META-INF/*.kotlin_module")
-    }
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion '30.0.2'
+    compileSdkVersion 33
+    buildToolsVersion '30.0.3'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -20,23 +15,24 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 31
+        multiDexEnabled true
+        minSdkVersion 21
+        targetSdkVersion 33
         applicationId 'com.trickytribe.penetrator'
         ndk {
-            abiFilters 'armeabi-v7a'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
         versionCode 1
-        versionName '0.1'
+        versionName '0.0.10'
     }
 
     aaptOptions {
-        noCompress = ['.unity3d', '.ress', '.resource', '.obb', '.bundle', '.unityexp'] + unityStreamingAssets.tokenize(', ')
+        noCompress = ['.ress', '.resource', '.obb'] + unityStreamingAssets.tokenize(', ')
         ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
     }
 
+
     lintOptions {
-        checkReleaseBuilds false
         abortOnError false
     }
 
@@ -48,7 +44,7 @@ android {
             jniDebuggable true
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
             signingConfig signingConfigs.debug
         }
@@ -56,6 +52,7 @@ android {
 
     packagingOptions {
         doNotStrip '*/armeabi-v7a/*.so'
+        doNotStrip '*/arm64-v8a/*.so'
     }
 
     bundle {
